@@ -14,69 +14,26 @@ public class Board {
 			placeShip(4);
 		}
 		
-		public void drawBoard() {
-			//prints the board to the user
-			System.out.println("  A B C D E F G H I J");
-			for (int i = 0; i <= boardArray.length-1; i++) {
-				System.out.print(i + 1 + " ");
-				for (int j = 0; j <= boardArray[i].length-1; j++) {
-					//if there is a ship at the coordinate, do not print 'S'
-					if (boardArray[i][j] != 'S') {
-						System.out.print(boardArray[i][j] + " ");
-					}
-					else {
-						System.out.print("  ");
-					}
-					//System.out.print(boardArray[i][j] + " ");
-				}
-				System.out.print('\n');
+		private void placeShip(int shipLength) {
+			//Attempts to place ship at randomly generated coordinates
+			//until a valid position is found
+			Random rand = new Random();
+			
+			boolean shipPlaced = false;
+			
+			while (shipPlaced == false) {
+				
+				//generate random coordinates
+				int x = rand.nextInt(10);
+				int y = rand.nextInt(5);
+				
+				//generate random orientation (0 = horizontal, 1 = vertical)
+				int orientation = rand.nextInt(2);
+				//try to place ships at generated coords
+				shipPlaced = updateBoard(orientation, x, y, shipLength);
+				
 			}
-		}
-		
-		public void validateGuess(char xChar, int yInt) {
-			//Function to validate the guess from the user
-			//find ASCII value of character
-			int xInt = (int) xChar;
-			//check if xChar is in range 'a' - 'j' (0-10)
-			//check if yInt is in range 1-5
-			if (xInt >= 97 && xInt <= 106 && yInt >= 1 && yInt <= 5) {
-				//Convert letter to corresponding numerical value i.e. a -> 0, b -> 1 etc.
-				xInt = xInt - 49;
-				xInt = Character.getNumericValue(xInt);
-				//-1 to get array index
-				yInt = yInt - 1;
-				makeGuess(xInt, yInt);
-			}
-			else {
-				System.out.println("Please enter a valid guess");
-				drawBoard();
-			}
-		}
-		
-		public void makeGuess(int x, int y) {
-			//if there is a ship [y][x], update that coordinate to 'H' to represent hit
-			if (boardArray[y][x] == 'S') {
-				boardArray[y][x] = 'H';
-			}
-			//if there is no ship at [y][x], record 'M' for miss  
-			else {
-				boardArray[y][x] = 'M';
-			}
-			drawBoard();
-		}
-		
-		public boolean checkGameOver() {
-			boolean gameOver = true;
-			//loops through the board to check if there are any ships remaining
-			//if there are, then game is not over
-			for (int i = 0; i <= (boardArray.length-1); i++) {
-				for (int j = 0; j <= (boardArray[0].length-1); j++) {
-					if (boardArray[i][j] == 'S') {
-						gameOver = false;
-					}
-				}
-			}
-			return gameOver;
+			
 		}
 		
 		private boolean updateBoard(int orientation, int x, int y, int shipLength) {
@@ -149,24 +106,71 @@ public class Board {
 			return shipPlaced;
 		}
 		
-		private void placeShip(int shipLength) {
-			Random rand = new Random();
-			
-			boolean shipPlaced = false;
-			
-			while (shipPlaced == false) {
-				
-				//generate random coordinates
-				int x = rand.nextInt(10);
-				int y = rand.nextInt(5);
-				
-				//generate random orientation (0 = horizontal, 1 = vertical)
-				int orientation = rand.nextInt(2);
-				//int orientation = 0;
-				shipPlaced = updateBoard(orientation, x, y, shipLength);
-				
+		public void drawBoard() {
+			//prints the board to the user
+			System.out.println("  A B C D E F G H I J");
+			for (int i = 0; i <= boardArray.length-1; i++) {
+				System.out.print(i + 1 + " ");
+				for (int j = 0; j <= boardArray[i].length-1; j++) {
+					//if there is a ship at the coordinate, do not print 'S'
+					if (boardArray[i][j] != 'S') {
+						System.out.print(boardArray[i][j] + " ");
+					}
+					else {
+						System.out.print("  ");
+					}
+					//System.out.print(boardArray[i][j] + " ");
+				}
+				System.out.print('\n');
 			}
+		}
+		
+		public void makeGuess(char xChar, int yInt) {
+			int coords[] = new int[2];
+			//convert guess into coordinates corresponding to boardArray
+			coords = convertGuess(xChar, yInt);
+			int x = coords[0];
+			int y = coords[1];
 			
+			//if there is a ship [y][x], update that coordinate to 'H' to represent hit
+			if (boardArray[y][x] == 'S') {
+				boardArray[y][x] = 'H';
+			}
+			//if there is no ship at [y][x], record 'M' for miss  
+			else {
+				boardArray[y][x] = 'M';
+			}
+			drawBoard();
+		}
+		
+		public int[] convertGuess(char xChar, int yInt) {
+			//function to convert user's guess into coordinates corresponding to the boardArray
+			//find ASCII value of character
+			int xInt = (int) xChar;
+			//Convert letter to corresponding numerical value i.e. a -> 0, b -> 1 etc.
+			xInt = xInt - 49;
+			xInt = Character.getNumericValue(xInt);
+			//-1 to get array index
+			yInt = yInt - 1;
+			//array to store the converted coordinates
+			int coords[] = new int[2];
+			coords[0] = xInt;
+			coords[1] = yInt;
+			return coords;
+		}
+		
+		public boolean checkGameOver() {
+			boolean gameOver = true;
+			//loops through the board to check if there are any ships remaining
+			//if there are, then game is not over
+			for (int i = 0; i <= (boardArray.length-1); i++) {
+				for (int j = 0; j <= (boardArray[0].length-1); j++) {
+					if (boardArray[i][j] == 'S') {
+						gameOver = false;
+					}
+				}
+			}
+			return gameOver;
 		}
 		
 		
