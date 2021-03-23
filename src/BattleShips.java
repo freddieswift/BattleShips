@@ -14,21 +14,23 @@ public class BattleShips {
 			System.out.println("Enter letter");
 			String xString = scanner.next();
 			char xChar = xString.charAt(0);
+			xChar = Character.toLowerCase(xChar);
 			
 			System.out.println("Enter number");
-			int yInt = scanner.nextInt();
-			
-			board.validateGuess(xChar, yInt);
-			gameOver = board.checkGameOver();
+			int yInt;
+			final String i = scanner.next();
+			try {
+				yInt = Integer.valueOf(i);
+				board.validateGuess(xChar, yInt);
+				gameOver = board.checkGameOver();
+			}
+			catch (NumberFormatException ex) {
+				System.out.println("Please enter a valid guess");
+				board.drawBoard();
+			}			
 		}
 		scanner.close();
 		
 		System.out.println("Congratulations! You have won!");
-		
-		
 	}
-	
-	 
-	
-
 }
